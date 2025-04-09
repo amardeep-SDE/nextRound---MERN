@@ -1,18 +1,50 @@
-const Input = ({ label, name, type, value, placeholder, onChange }) => {
+import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+const Input = ({
+  label,
+  name,
+  type,
+  value,
+  onChange,
+  placeholder,
+  icon,
+  error,
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === "password";
+
+  // const handleToggle = () => setShowPassword((prev) => !prev);
+  const handleToggle = () => setShowPassword(!showPassword);
+
+
   return (
-    <>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        type={type}
-        name={name}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        className="border border-neutral-200 mt-1 mb-4 px-2 py-2 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-      />
-    </>
+    <div className="mb-4">
+      <label className="block mb-1 font-medium">{label}</label>
+      <div className="flex items-center border rounded-md px-3 py-2 relative">
+        {/* <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          {icon}
+        </span> */}
+        {icon && <span className="mr-2 text-gray-500">{icon}</span>}
+        <input
+          type={isPassword && showPassword ? "text" : type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="w-full outline-none pr-8"
+        />
+        {isPassword && (
+          <span
+            className="absolute right-3 cursor-pointer text-gray-500"
+            onClick={handleToggle}
+          >
+            {showPassword ? <FiEyeOff /> : <FiEye />}
+          </span>
+        )}
+      </div>
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+    </div>
   );
 };
 

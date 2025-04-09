@@ -7,28 +7,25 @@ import crypto from "crypto";
 import cloudinary from "../utils/cloudinary.js";
 import { generateVerificationCode } from "../utils/generateVerificationCode.js";
 import { generateToken } from "../utils/generateToken.js";
-import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail, sendWelcomeEmail } from "../mail/email.js";
+import {
+  sendPasswordResetEmail,
+  sendResetSuccessEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+} from "../mail/email.js";
 export const signup = async (req, res) => {
   try {
     const { username, email, phone, password } = req.body;
 
     console.log(req.body);
-    
-
-    if (!username || !email || !phone || !password) {
-      return res.json({
-        status: false,
-        message: "All fields are required",
-      });
-    }
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({
-                success: false,
-                message: "User already exist with this email"
-            })
+        success: false,
+        message: "User already exist with this email",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -103,7 +100,8 @@ export const login = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
     const { verificationCode } = req.body;
-
+    console.log("verificationCode", verificationCode);
+    
     const user = await User.findOne({
       verificationToken: verificationCode,
       verificationTokenExpiresAt: { $gt: Date.now() },
@@ -155,7 +153,10 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     // send email to user with reset token
-    await sendPasswordResetEmail(user.email, `${process.env.FRONTEND_URL}/reset-password/${resetToken}`);
+    await sendPasswordResetEmail(
+      user.email,
+      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`
+    );
 
     return res.status(200).json({
       success: true,
