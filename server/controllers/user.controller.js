@@ -29,7 +29,7 @@ export const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationToken = generateVerificationCode();
+    // const verificationToken = generateVerificationCode();
 
     // const newUser = new User({
     //   username,
@@ -43,12 +43,12 @@ export const signup = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      verificationToken,
-      verificationTokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+      // verificationToken,
+      // verificationTokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
     });
 
     generateToken(res, user);
-    await sendVerificationEmail(email, verificationToken);
+    // await sendVerificationEmail(email, verificationToken);
 
     const userWithoutPassword = await User.findOne({ email }).select(
       "-password"

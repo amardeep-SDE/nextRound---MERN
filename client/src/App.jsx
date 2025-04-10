@@ -7,6 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
 import VerifyEmail from "./auth/VerifyEmail";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import AddSchedule from "./pages/AddSchedule";
+import ScheduleList from "./pages/ScheduleList";
 
 const appRouter = createBrowserRouter([
   {
@@ -23,13 +27,28 @@ const appRouter = createBrowserRouter([
   },
   {
     path: "/reset-password",
-    element: <ResetPassword/>,
+    element: <ResetPassword />,
   },
   {
     path: "/verify-email",
-    element: <VerifyEmail/>,
+    element: <VerifyEmail />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: "/add-schedule",
+    element: <AddSchedule />,
+  },
+  {
+    path: "/schedule-list", 
+    element: <ScheduleList />,
   }
- 
 ]);
 
 const App = () => {
