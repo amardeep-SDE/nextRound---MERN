@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-
+import useSchedule from "../hooks/useSchedule";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { FiLoader } from "react-icons/fi";
 const AddSchedule = () => {
+  const { addSchedule, loading } = useSchedule();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     date: "",
     day: "",
@@ -63,12 +69,23 @@ const AddSchedule = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Data:", formData);
+    const schedule = addSchedule(formData);
+
+    if (schedule) {
+      toast.success("Schedule added successfully!");
+      navigate("/schedule");
+    } else {
+      toast.error("Failed to add schedule!");
+      navigate("/add-schedule");
+    }
     // Send to API or store
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#141E30] via-[#243B55] to-[#141E30]
- text-white p-6 md:p-10">
+    <div
+      className="min-h-screen bg-gradient-to-br from-[#141E30] via-[#243B55] to-[#141E30]
+ text-white p-6 md:p-10"
+    >
       <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm p-8 rounded-xl shadow-xl">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Add Interview Schedule
@@ -109,14 +126,15 @@ const AddSchedule = () => {
               className="p-2 rounded bg-white/20 w-full"
               required
             >
-              <option className="bg-gray-500" value="">Select Role</option>
+              <option className="bg-gray-500" value="">
+                Select Role
+              </option>
               {roleOptions.map((role) => (
                 <option className="bg-gray-500" key={role} value={role}>
                   {role}
                 </option>
               ))}
             </select>
-            
           </div>
 
           {/* Interview Mode */}
@@ -131,8 +149,12 @@ const AddSchedule = () => {
                 onChange={handleChange}
                 className="p-2 rounded bg-white/20 w-full"
               >
-                <option className="bg-gray-500" value="Online">Online</option>
-                <option className="bg-gray-500" value="Offline">Offline</option>
+                <option className="bg-gray-500" value="Online">
+                  Online
+                </option>
+                <option className="bg-gray-500" value="Offline">
+                  Offline
+                </option>
               </select>
             </div>
 
@@ -215,7 +237,7 @@ const AddSchedule = () => {
                   }
                   className="p-2 rounded bg-white/20 w-full font-semibold"
                 />
-               
+
                 <button
                   type="button"
                   onClick={() => removeTopic(index)}
@@ -244,18 +266,31 @@ const AddSchedule = () => {
               className="p-2 rounded bg-white/20 w-full"
               required
             >
-              <option className="bg-gray-500" value="">Select Result</option>
-              <option className="bg-gray-500" value="Selected">Selected</option>
-              <option className="bg-gray-500" value="Rejected">Rejected</option>
-              <option className="bg-gray-500" value="On Hold">On Hold</option>
+              <option className="bg-gray-500" value="">
+                Select Result
+              </option>
+              <option className="bg-gray-500" value="Selected">
+                Selected
+              </option>
+              <option className="bg-gray-500" value="Rejected">
+                Rejected
+              </option>
+              <option className="bg-gray-500" value="On Hold">
+                On Hold
+              </option>
             </select>
           </div>
 
           <button
             type="submit"
             className="bg-white text-black px-6 py-2 rounded-xl hover:scale-105 transition-all duration-300 shadow-md"
+            disabled={loading}
           >
-            Save Interview
+            {loading ? (
+              <FiLoader className="animate-spin text-xl" />
+            ) : (
+              "save interview"
+            )}
           </button>
         </form>
       </div>

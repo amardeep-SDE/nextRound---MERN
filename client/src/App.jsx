@@ -11,6 +11,8 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import AddSchedule from "./pages/AddSchedule";
 import ScheduleList from "./pages/ScheduleList";
+import UserProfile from "./pages/UserProfile";
+import ChatPage from "./pages/ChatPage";
 
 const appRouter = createBrowserRouter([
   {
@@ -42,12 +44,24 @@ const appRouter = createBrowserRouter([
     element: <Dashboard />,
   },
   {
+    path: "/schedule",
+    element: <ScheduleList />,
+  },
+  {
     path: "/add-schedule",
     element: <AddSchedule />,
   },
   {
     path: "/schedule-list", 
     element: <ScheduleList />,
+  },
+  {
+    path: "/user-details",
+    element: <UserProfile />,
+  },
+  {
+    path: "/chat",
+    element: <ChatPage/>,
   }
 ]);
 

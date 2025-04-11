@@ -1,94 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
+import useSchedule from "../hooks/useSchedule";
+import { useSelector } from "react-redux"; // 👈 for Redux data
 
-const interviews = [
-  {
-    company: "Google",
-    date: "2024-08-01",
-    mode: "Online",
-    place: "",
-    questions: ["What is a linked list?", "How does load balancing work?"],
-  },
-  {
-    company: "Amazon",
-    date: "2024-08-05",
-    mode: "Offline",
-    place: "Hyderabad",
-    questions: ["Explain abstraction in OOPs.", "What is a transaction?"],
-  },
-  {
-    company: "Meta",
-    date: "2024-08-10",
-    mode: "Online",
-    place: "",
-    questions: ["What are React Hooks?", "How to optimize rendering?"],
-  },
-  {
-    company: "Microsoft",
-    date: "2024-08-15",
-    mode: "Offline",
-    place: "Bangalore",
-    questions: ["Explain BFS in Graph.", "What is caching?"],
-  },
-  {
-    company: "Adobe",
-    date: "2024-08-18",
-    mode: "Online",
-    place: "",
-    questions: ["What is closure?", "Difference between REST and GraphQL?"],
-  },
-  {
-    company: "Netflix",
-    date: "2024-08-20",
-    mode: "Offline",
-    place: "Mumbai",
-    questions: ["What is JWT?", "Explain IAM in AWS."],
-  },
-  {
-    company: "Flipkart",
-    date: "2024-08-22",
-    mode: "Online",
-    place: "",
-    questions: ["Explain Multithreading in Java.", "What is Dependency Injection?"],
-  },
-  {
-    company: "Paytm",
-    date: "2024-08-25",
-    mode: "Offline",
-    place: "Noida",
-    questions: ["What is the difference between Stack and Queue?", "Explain middleware in Express."],
-  },
-];
+const ScheduleList = () => {
+  const { getSchedules, loading, error } = useSchedule();
 
-const InterviewList = () => {
+  const schedules = useSelector((state) => state.schedule.schedules); // 👈 Redux se data le rahe ho
+  console.log(schedules.schedules);
+  console.log(schedules?.schedules?.[0]?.company);
+  console.log(schedules?.schedules?.map(item => item.company));
+
+
+
+  useEffect(() => {
+    getSchedules(); // 👈 Redux me dispatch ho raha h setSchedules
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-tr from-[#1f2937] via-[#2c3e50] to-[#1c1c1c] text-white px-4 py-8 font-poppins">
       <h1 className="text-3xl font-bold text-center mb-8">All Interview Qs</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {interviews.map((interview, idx) => (
-          <div
-            key={idx}
-            className="bg-white/10 rounded-xl p-4 shadow-md hover:shadow-lg backdrop-blur-sm transition-all duration-300"
-          >
-            <h2 className="text-xl font-semibold mb-1">{interview.company}</h2>
-            <p className="text-sm mb-1 text-gray-300">Date: {interview.date}</p>
-            <p className="text-sm mb-1 text-gray-300">Mode: {interview.mode}</p>
-            {interview.mode === "Offline" && (
-              <p className="text-sm mb-1 text-gray-300">Place: {interview.place}</p>
-            )}
 
-            <div className="mt-3">
-              <h3 className="font-semibold mb-1 text-white underline">INT Q:</h3>
-              <ul className="text-sm list-decimal list-inside text-gray-100">
-                {interview.questions.map((q, i) => (
-                  <li key={i}>{q}</li>
-                ))}
-              </ul>
+      {loading && <p className="text-center text-gray-300">Loading...</p>}
+      {error && <p className="text-center text-red-400">{error}</p>}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {Array.isArray(schedules?.schedules) && schedules.schedules.length > 0 ? (
+        schedules.schedules.map((schedule, idx) => (
+            <div
+              key={idx}
+              className="bg-white/10 rounded-xl p-4 shadow-md hover:shadow-lg backdrop-blur-sm transition-all duration-300"
+            >
+              <h2 className="text-xl font-semibold mb-1">{schedule.company}</h2>
+              <p className="text-sm mb-1 text-gray-300">
+                Date: {schedule.date}
+              </p>
+              <p className="text-sm mb-1 text-gray-300">Day: {schedule.day}</p>
+              <p className="text-sm mb-1 text-gray-300">
+                Mode: {schedule.mode}
+              </p>
+              {schedule.mode === "Offline" && (
+                <p className="text-sm mb-1 text-gray-300">
+                  Place: {schedule.place}
+                </p>
+              )}
+              <p className="text-sm mb-1 text-gray-300">
+                Role: {schedule.role}
+              </p>
+              <p className="text-sm mb-1 text-gray-300">
+                Result: {schedule.result}
+              </p>
+              <p className="text-sm mb-1 text-gray-300">
+                Rounds: {schedule.rounds.join(", ")}
+              </p>
+              <div className="mt-3">
+                <h3 className="font-semibold mb-1 text-white underline">
+                  Topics:
+                </h3>
+                <ul className="text-sm list-disc list-inside text-gray-100">
+                  {Array.isArray(schedule.topics) &&
+                    schedule.topics.map((topic, i) => (
+                      <li key={i}>{topic.title}</li>
+                    ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-300 col-span-full">
+            No schedules available.
+          </p>
+        )}
       </div>
     </div>
   );
 };
 
-export default InterviewList;
+export default ScheduleList;

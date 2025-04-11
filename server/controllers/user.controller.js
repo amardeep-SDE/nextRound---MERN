@@ -30,6 +30,8 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     // const verificationToken = generateVerificationCode();
+    // console.log("verificationToken", verificationToken);
+    
 
     // const newUser = new User({
     //   username,
@@ -97,35 +99,35 @@ export const login = async (req, res) => {
   }
 };
 
-export const verifyEmail = async (req, res) => {
-  try {
-    const { verificationCode } = req.body;
-    console.log("verificationCode", verificationCode);
+// export const verifyEmail = async (req, res) => {
+//   try {
+//     const { verificationCode } = req.body;
+//     console.log("verificationCode", verificationCode);
     
-    const user = await User.findOne({
-      verificationToken: verificationCode,
-      verificationTokenExpiresAt: { $gt: Date.now() },
-    }).select("-password");
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or expired verification code",
-      });
-    }
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpiresAt = undefined;
-    await user.save();
+//     const user = await User.findOne({
+//       verificationToken: verificationCode,
+//       verificationTokenExpiresAt: { $gt: Date.now() },
+//     }).select("-password");
+//     if (!user) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid or expired verification code",
+//       });
+//     }
+//     user.isVerified = true;
+//     user.verificationToken = undefined;
+//     user.verificationTokenExpiresAt = undefined;
+//     await user.save();
 
-    // send welcome email to user
-    await sendWelcomeEmail(user.email, user.username);
-    return res
-      .status(200)
-      .json({ success: true, message: "Email verified successfully", user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     // send welcome email to user
+//     await sendWelcomeEmail(user.email, user.username);
+//     return res
+//       .status(200)
+//       .json({ success: true, message: "Email verified successfully", user });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 export const logout = async (_, res) => {
   try {
