@@ -1,4 +1,4 @@
-import express from "express";
+import jwt from "jsonwebtoken";
 export const isAuthenticated = (req, res, next) => {
   try {
     const token = req.cookies.token;

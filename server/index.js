@@ -3,9 +3,10 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import connectDB from "./db/connectDB.js";
-import userRoute from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
+import userRoute from "./routes/user.routes.js";
 import scheduleRoutes from "./routes/schedule.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
 dotenv.config();
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(cors(corsOptions));
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/schedule", scheduleRoutes);
+app.use("/api/v1/message", chatRoutes);
 
 app.listen(PORT, () => {
   connectDB();

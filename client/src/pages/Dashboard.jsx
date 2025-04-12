@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const cardData = [
   {
@@ -28,6 +29,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
+    <>
+ <ThemeToggle/>
     <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#4b6cb7] to-[#182848] p-6 md:p-10">
       <h1 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center drop-shadow-md">
         nextRound Dashboard
@@ -58,6 +61,8 @@ const Dashboard = () => {
         ))}
       </div>
     </div>
+    </>
+   
   );
 };
 

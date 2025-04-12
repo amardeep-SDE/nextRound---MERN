@@ -1,28 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-
-const users = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  name: `User ${i + 1}`,
-  lastMessage: `Last message from User ${i + 1}`,
-  avatar: `https://avatar.iran.liara.run/public/${i % 2 === 0 ? "boy" : "girl"}`,
-  isOnline: i % 2 === 0,
-}));
-
-const dummyMessages = [
-  { from: "them", text: "Hey! How's it going?", time: "10:00 AM" },
-  { from: "me", text: "All good, you?", time: "10:02 AM" },
-  { from: "them", text: "Doing great, thanks!", time: "10:03 AM" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import useChat from "../hooks/useChat";
+import { setMessages } from "../store/chatSlice";
 
 const ChatPage = () => {
+  const dispatch = useDispatch();
+  const { fetchMessages, sendMessage, loading, error } = useChat();
+  const messagesEndRef = useRef(null);
+
   const [activeChatUser, setActiveChatUser] = useState(null);
-  const [messages, setMessages] = useState(dummyMessages);
   const [newMsg, setNewMsg] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const messagesEndRef = useRef(null);
+  const { messages} = useSelector((state) => state.chat);
+
+  const users = useSelector((state) => state.chat.conversations);
+
+  useEffect(() => {
+    if (activeChatUser) {
+      fetchMessages(activeChatUser.id);
+    }
+  }, [activeChatUser]);
 
   useEffect(() => {
     scrollToBottom();
@@ -32,17 +32,20 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (newMsg.trim() === "" && !selectedFile) return;
 
-    const newMessage = {
-      from: "me",
-      text: newMsg.trim(),
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      file: selectedFile,
+    const messageData = {
+      message: newMsg.trim(),
+      attachment: selectedFile,
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    await sendMessage(
+      activeChatUser.id,
+      messageData.message,
+      messageData.attachment
+    );
+
     setNewMsg("");
     setSelectedFile(null);
     setIsTyping(false);
@@ -66,26 +69,25 @@ const ChatPage = () => {
 
   const renderMessageContent = (msg) => (
     <div>
-      {msg.text && <p>{msg.text}</p>}
-      {msg.file && (
+      {msg.message && <p>{msg.message}</p>}
+      {msg.attachment && (
         <div className="mt-2">
-          {msg.file.type.startsWith("image/") ? (
-            <img
-              src={URL.createObjectURL(msg.file)}
-              alt="sent-img"
-              className="rounded-md max-w-[200px]"
-            />
-          ) : msg.file.type === "application/pdf" ? (
+          {msg.attachment.endsWith(".pdf") ? (
             <a
-              href={URL.createObjectURL(msg.file)}
+              href={msg.attachment}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block text-blue-600 underline"
-              title={msg.file.name}
             >
-              📄 {msg.file.name.length > 25 ? msg.file.name.slice(0, 25) + "..." : msg.file.name}
+              📄 {msg.attachment.split("/").pop()}
             </a>
-          ) : null}
+          ) : (
+            <img
+              src={msg.attachment}
+              alt="attachment"
+              className="rounded-md max-w-[200px]"
+            />
+          )}
         </div>
       )}
       <p className="text-[10px] text-right mt-1 opacity-70">{msg.time}</p>
@@ -160,24 +162,30 @@ const ChatPage = () => {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex ${msg.from === "me" ? "justify-end" : "justify-start"}`}
-                >
+              {loading ? (
+                <p className="text-gray-400">Loading messages...</p>
+              ) : error ? (
+                <p className="text-red-500">Error loading messages.</p>
+              ) : (
+                messages.map((msg, index) => (
                   <div
-                    className={`max-w-xs px-4 py-2 rounded-2xl shadow ${
-                      msg.text || msg.file
-                        ? msg.from === "me"
-                          ? "bg-green-500 text-white rounded-br-none"
-                          : "bg-white text-gray-800 rounded-bl-none"
-                        : "bg-transparent shadow-none"
+                    key={index}
+                    className={`flex ${
+                      msg.fromSelf ? "justify-end" : "justify-start"
                     }`}
                   >
-                    {renderMessageContent(msg)}
+                    <div
+                      className={`max-w-xs px-4 py-2 rounded-2xl shadow ${
+                        msg.fromSelf
+                          ? "bg-green-500 text-white rounded-br-none"
+                          : "bg-white text-gray-800 rounded-bl-none"
+                      }`}
+                    >
+                      {renderMessageContent(msg)}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
 
@@ -191,7 +199,10 @@ const ChatPage = () => {
                     className="h-20 w-auto rounded shadow"
                   />
                 ) : selectedFile.type === "application/pdf" ? (
-                  <div className="text-sm truncate max-w-xs" title={selectedFile.name}>
+                  <div
+                    className="text-sm truncate max-w-xs"
+                    title={selectedFile.name}
+                  >
                     📄 {selectedFile.name}
                     <a
                       href={URL.createObjectURL(selectedFile)}
@@ -214,7 +225,9 @@ const ChatPage = () => {
 
             {/* Typing Indicator */}
             {isTyping && (
-              <div className="px-4 text-sm text-gray-500 italic">You are typing...</div>
+              <div className="px-4 text-sm text-gray-500 italic">
+                You are typing...
+              </div>
             )}
 
             {/* Input */}
@@ -250,7 +263,9 @@ const ChatPage = () => {
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center bg-gray-50">
-            <p className="text-gray-400 text-xl">Select a chat to start messaging</p>
+            <p className="text-gray-400 text-xl">
+              Select a chat to start messaging
+            </p>
           </div>
         )}
       </div>

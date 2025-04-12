@@ -41,7 +41,7 @@ const Login = () => {
 
     if (success) {
       toast.success("Login successful!");
-      navigate("/verify-email");
+      navigate("/dashboard");
     } else {
       toast.error("Invalid email or password!");
       // toast.error(error);

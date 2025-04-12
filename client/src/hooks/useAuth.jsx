@@ -18,6 +18,8 @@ const useAuth = () => {
       const response = await axios.post(`${API_URL}/signup`, signupData, {
         withCredentials: true,
       });
+      console.log(response.data);
+      
       dispatch(setUser(response.data));
       return response.data;
     } catch (err) {
@@ -35,6 +37,8 @@ const useAuth = () => {
       const response = await axios.post(`${API_URL}/login`, loginData, {
         withCredentials: true,
       });
+      console.log(response.data);
+      
       dispatch(setUser(response.data));
       return response.data;
     } catch (err) {

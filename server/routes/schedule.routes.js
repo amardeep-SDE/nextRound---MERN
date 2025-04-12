@@ -10,8 +10,8 @@ const router = express.Router();
 
 // router.post("/schedule", isAuthenticated, createSchedule);
 router.route("/schedule").post( createSchedule);
-// router.route("/schedules").get(isAuthenticated, getAllSchedules);
-router.route("/schedules").get( getAllSchedules);
+router.route("/schedules").get(isAuthenticated, getAllSchedules);
+// router.route("/schedules").get( getAllSchedules);
 
 router.route("/schedule/:id").delete( deleteSchedule);
 

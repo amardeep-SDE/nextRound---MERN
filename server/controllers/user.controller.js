@@ -246,3 +246,26 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// export const getOtherUsers = async (req, res) => {
+//   try {
+//     const users = await User.find().select("-password");
+//     return res.status(200).json({
+//       success: true,
+//       message: "Users fetched successfully",
+//       users,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+export const getOtherUsers = async (req, res) => {
+  try {
+      const loggedInUserId = req.id;
+      const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+      return res.status(200).json(otherUsers);
+  } catch (error) {
+      console.log(error);
+  }
+}
