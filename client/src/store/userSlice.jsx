@@ -13,11 +13,11 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.currentUser = action.payload;
-      // localStorage.setItem("currentUser", JSON.stringify(action.payload));
+      localStorage.setItem("currentUser", JSON.stringify(action.payload));
     },
     clearUser: (state) => {
       state.currentUser = null;
-      // localStorage.removeItem("currentUser");
+      localStorage.removeItem("currentUser");
     },
     setOtherUsers: (state, action) => {
       state.otherUsers = action.payload;
