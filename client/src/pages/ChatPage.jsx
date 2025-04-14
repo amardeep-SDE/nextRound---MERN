@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useChat from "../hooks/useChat";
 import { setMessages } from "../store/chatSlice";
+import useOtherUsers from "../hooks/useOtherUsers";
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -14,9 +15,16 @@ const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  const { messages} = useSelector((state) => state.chat);
+  useOtherUsers();
+  const OtherUsersList = useSelector((state) => state.user.otherUsers);
+  console.log(OtherUsersList);
+
+  useChat();
+  const messages = useSelector((state) => state.chat.messages);
+  console.log(messages);
 
   const users = useSelector((state) => state.chat.conversations);
+  console.log(users);
 
   useEffect(() => {
     if (activeChatUser) {
@@ -63,8 +71,8 @@ const ChatPage = () => {
     }
   };
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = OtherUsersList.filter((user) =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderMessageContent = (msg) => (
@@ -118,7 +126,7 @@ const ChatPage = () => {
           >
             <div className="relative w-10 h-10">
               <img
-                src={user.avatar}
+                src={user.profilePicture}
                 alt="avatar"
                 className="w-10 h-10 rounded-full object-cover"
               />
@@ -127,7 +135,7 @@ const ChatPage = () => {
               )}
             </div>
             <div>
-              <p className="font-medium">{user.name}</p>
+              <p className="font-medium">{user.username}</p>
               <p className="text-sm text-gray-500 truncate w-40">
                 {user.lastMessage}
               </p>
