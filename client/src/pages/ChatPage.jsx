@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useChat from "../hooks/useChat";
-import { setMessages } from "../store/chatSlice";
+// import { setMessages } from "../store/chatSlice";
 import useOtherUsers from "../hooks/useOtherUsers";
 
 const ChatPage = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { fetchMessages, sendMessage, loading, error } = useChat();
   const messagesEndRef = useRef(null);
 
