@@ -13,6 +13,7 @@ import AddSchedule from "./pages/AddSchedule";
 import ScheduleList from "./pages/ScheduleList";
 import UserProfile from "./pages/UserProfile";
 import ChatPage from "./pages/ChatPage";
+import UpdateUser from "./pages/UpdateUser";
 
 const appRouter = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ const appRouter = createBrowserRouter([
   {
     path: "/user-details",
     element: <UserProfile />,
+  },
+  {
+    path: "/update-user",
+    element: <UpdateUser />,
   },
   {
     path: "/chat",
