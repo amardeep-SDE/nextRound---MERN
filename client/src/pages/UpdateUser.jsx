@@ -3,9 +3,14 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../hooks/useAuth";
 
 const UpdateUser = () => {
   const currentUser = useSelector((state) => state.user.currentUser?.user);
+
+  console.log("Current User:", currentUser);
+
+  const { updateUser } = useAuth();
 
   const [formData, setFormData] = useState({
     username: currentUser?.username || "",
@@ -23,19 +28,17 @@ const UpdateUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.put(
-        "http://localhost:3001/api/users/profile/update",
-        formData,
-        {
-          withCredentials: true, // zaroori agar login cookie/session ka use ho raha ho
-        }
-      );
+    const success = await updateUser(formData);
+    console.log("Update User Success:", success);
+    if (!success) {
+      toast.error("Failed to update profile!");
+      return;
+    }
 
+    if (success) {
       toast.success("Profile updated successfully!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update profile");
+    } else {
+      toast.error("Failed to update profile!");
     }
   };
 

@@ -1,7 +1,7 @@
 // src/hooks/useAuth.js
 import { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 import { clearUser, setUser } from "../store/userSlice";
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const useAuth = () => {
         withCredentials: true,
       });
       console.log(response.data);
-      
+
       dispatch(setUser(response.data));
       return response.data;
     } catch (err) {
@@ -38,7 +38,7 @@ const useAuth = () => {
         withCredentials: true,
       });
       console.log(response.data);
-      
+
       dispatch(setUser(response.data));
       return response.data;
     } catch (err) {
@@ -53,9 +53,13 @@ const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`${API_URL}/verify-email`,  { verificationCode: code }, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        `${API_URL}/verify-email`,
+        { verificationCode: code },
+        {
+          withCredentials: true,
+        }
+      );
       dispatch(setUser(response.data.user)); // Assuming backend sends updated user
       return response.data;
     } catch (err) {
@@ -75,11 +79,31 @@ const useAuth = () => {
     }
   };
 
+  const updateUser = async (formData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.put(`${API_URL}/profile/update`, formData, {
+        withCredentials: true,
+      });
+      console.log(response.data);
+
+      dispatch(setUser(response.data));
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Update failed");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     signup,
     login,
     verifyEmail,
     logout,
+    updateUser,
     loading,
     error,
   };
