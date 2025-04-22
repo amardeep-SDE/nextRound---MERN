@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  conversations: [],
-  messages: [],
+  conversations: [],       // list of users
+  messagesByUser: {},      // { [userId]: [ msg, msg, … ] }
 };
 
 const chatSlice = createSlice({
@@ -13,10 +13,15 @@ const chatSlice = createSlice({
       state.conversations = action.payload;
     },
     setMessages: (state, action) => {
-      state.messages = action.payload;
+      const { userId, messages } = action.payload;
+      state.messagesByUser[userId] = messages;
     },
     addMessage: (state, action) => {
-      state.messages.push(action.payload);
+      const { userId, message } = action.payload;
+      if (!state.messagesByUser[userId]) {
+        state.messagesByUser[userId] = [];
+      }
+      state.messagesByUser[userId].push(message);
     },
   },
 });

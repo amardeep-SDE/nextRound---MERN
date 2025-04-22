@@ -19,7 +19,10 @@ const useChat = () => {
     setError(null);
     try {
       const response = await axios.get(`${API_URL}/${userId}`, { withCredentials: true });
-      dispatch(setMessages({ userId, messages: response.data.conversation || [] }));
+      console.log(response);
+      // dispatch(setConversations(response.data.conversations || []));
+      
+      // dispatch(setMessages({ userId, messages: response.data.conversation || [] }));
     } catch (err) {
       console.error('Failed to fetch messages:', err);
       setError('Failed to fetch messages');
@@ -28,7 +31,7 @@ const useChat = () => {
     }
   };
 
-  const sendMessage = async (receiverId, message, attachment = null) => {
+  const sendMessage = async (receiverId, message, attachment ) => {
     setLoading(true);
     setError(null);
     try {

@@ -20,8 +20,11 @@ const ChatPage = () => {
   console.log(OtherUsersList);
 
   useChat();
-  const messages = useSelector((state) => state.chat.messages);
-  console.log(messages);
+  // const messages = useSelector((state) => state.chat.messages);
+  const messages = useSelector(
+    (state) => state.chat.messagesByUser[activeChatUser?.id] || []
+  );
+  
 
   const users = useSelector((state) => state.chat.conversations);
   console.log(users);
@@ -53,6 +56,10 @@ const ChatPage = () => {
       messageData.message,
       messageData.attachment
     );
+    console.log(messageData);
+    console.log(activeChatUser.id);
+    
+    
 
     setNewMsg("");
     setSelectedFile(null);
