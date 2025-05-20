@@ -1,8 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { Typewriter } from "react-simple-typewriter";
 import NextRoundLogo from "../components/NextRoundLogo";
-import { motion } from "framer-motion";
 
 const Home = () => {
   return (
