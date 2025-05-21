@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Typewriter } from "react-simple-typewriter";
+import { motion } from "framer-motion";
+import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import NextRoundLogo from "../components/NextRoundLogo";
 
 const Home = () => {
@@ -13,12 +15,14 @@ const Home = () => {
       {/* Auth Buttons */}
       <div className="absolute top-4 right-6 md:right-24 flex gap-4 z-10">
         <Link to="/">
-          <button className="px-4 py-1.5 text-sm font-semibold text-white bg-white/10 border border-white/30 backdrop-blur-md rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 shadow-lg">
+          <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-white/10 border border-white/30 backdrop-blur-md rounded-xl hover:bg-white/20 transition-all duration-300 hover:scale-105 shadow-lg">
+            <FaSignInAlt className="text-lg" />
             Login
           </button>
         </Link>
         <Link to="/signup">
-          <button className="px-4 py-1.5 text-sm font-semibold text-gray-900 bg-white rounded-xl hover:bg-gray-200 transition-all duration-300 hover:scale-105 shadow-xl">
+          <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-900 bg-white rounded-xl hover:bg-gray-200 transition-all duration-300 hover:scale-105 shadow-xl">
+            <FaUserPlus className="text-lg" />
             Sign Up
           </button>
         </Link>
@@ -84,14 +88,19 @@ const Home = () => {
           ].map((card, index) => (
             <motion.div
               key={index}
-              className="bg-white/10 rounded-2xl p-5 text-white shadow-xl backdrop-blur-sm w-full md:w-[45%] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:bg-white/20"
+              className="bg-gradient-to-br from-white/10 to-white/5 hover:from-yellow-500/20 hover:to-pink-500/10 rounded-2xl p-6 text-white shadow-xl backdrop-blur-sm w-full md:w-[45%] transform transition-all duration-300 hover:scale-[1.05] hover:shadow-2xl cursor-pointer group"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 200 }}
             >
-              <h3 className="text-lg font-semibold mb-2">
-                {card.icon} {card.title}
-              </h3>
-              <p className="text-sm text-gray-200">{card.desc}</p>
+              <div className="flex items-center mb-3">
+                <div className="text-3xl bg-white/20 p-2 rounded-full shadow-inner group-hover:scale-110 transition-transform duration-300">
+                  {card.icon}
+                </div>
+                <h3 className="text-lg font-semibold ml-4">{card.title}</h3>
+              </div>
+              <p className="text-sm text-gray-200 group-hover:text-white transition-colors duration-300">
+                {card.desc}
+              </p>
             </motion.div>
           ))}
         </motion.div>
