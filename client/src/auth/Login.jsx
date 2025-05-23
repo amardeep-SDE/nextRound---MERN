@@ -49,7 +49,16 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-gradient-to-r from-cyan-400 to-blue-500 px-4">
+    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-400 to-blue-500 px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
+       <div className="hidden md:flex md:w-1/2 bg-indigo-100 items-center justify-center">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" 
+            alt="Register User"
+            className="w-3/4 h-auto object-contain"
+          />
+        </div>
+
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
           Welcome Back
@@ -104,6 +113,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
+    </div>
     </div>
   );
 };

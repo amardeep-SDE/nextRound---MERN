@@ -15,7 +15,6 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
-
   const [errors, setErrors] = useState({});
   const { signup, loading, error } = useAuth();
 
@@ -26,20 +25,16 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     const validation = signupSchema.safeParse(formData);
-
     if (!validation.success) {
       const fieldErrors = validation.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
       return;
     }
-    setErrors({}); // Clear previous errors
+    setErrors({});
 
     const response = await signup(formData);
-    console.log(response);
-
     if (response) {
       toast.success("Signup successful! Please login.");
       navigate("/");
@@ -49,73 +44,86 @@ const Signup = () => {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-gradient-to-r from-indigo-400 to-blue-500 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-6 text-indigo-600">
-          Create Account
-        </h1>
+    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-400 to-blue-500 px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
+        
+        {/* Left Side - Image */}
+        <div className="hidden md:flex md:w-1/2 bg-indigo-100 items-center justify-center">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" 
+            alt="Register User"
+            className="w-3/4 h-auto object-contain"
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="User Name"
-            name="username"
-            type="text"
-            value={formData.username}
-            placeholder="Enter your name"
-            onChange={handleChange}
-            error={errors.username}
-            icon={<FiUser />}
-          />
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            placeholder="Enter your email"
-            onChange={handleChange}
-            error={errors.email}
-            icon={<FiMail />}
-          />
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            placeholder="Enter your password"
-            onChange={handleChange}
-            error={errors.password}
-            icon={<FiLock />}
-          />
-          <Input
-            label="Phone Number"
-            name="phone"
-            type="text"
-            value={formData.phone}
-            placeholder="Enter your phone number"
-            onChange={handleChange}
-            error={errors.phone}
-            icon={<FiPhone />}
-          />
+        {/* Right Side - Form */}
+        <div className="w-full md:w-1/2 p-8">
+          <h1 className="text-3xl font-bold text-center mb-6 text-indigo-600">
+            Create Account
+          </h1>
 
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition duration-200 flex justify-center items-center"
-            disabled={loading}
-          >
-            {loading ? (
-              <FiLoader className="animate-spin text-xl" />
-            ) : (
-              "Sign Up"
-            )}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="User Name"
+              name="username"
+              type="text"
+              value={formData.username}
+              placeholder="Enter your name"
+              onChange={handleChange}
+              error={errors.username}
+              icon={<FiUser />}
+            />
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              placeholder="Enter your email"
+              onChange={handleChange}
+              error={errors.email}
+              icon={<FiMail />}
+            />
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              placeholder="Enter your password"
+              onChange={handleChange}
+              error={errors.password}
+              icon={<FiLock />}
+            />
+            <Input
+              label="Phone Number"
+              name="phone"
+              type="text"
+              value={formData.phone}
+              placeholder="Enter your phone number"
+              onChange={handleChange}
+              error={errors.phone}
+              icon={<FiPhone />}
+            />
 
-        <p className="text-sm text-center text-gray-600 mt-4">
-          Already have an account?{" "}
-          <Link to="/" className="text-indigo-600 font-medium hover:underline">
-            Login here
-          </Link>
-        </p>
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition duration-200 flex justify-center items-center"
+              disabled={loading}
+            >
+              {loading ? (
+                <FiLoader className="animate-spin text-xl" />
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+          </form>
+
+          <p className="text-sm text-center text-gray-600 mt-4">
+            Already have an account?{" "}
+            <Link to="/" className="text-indigo-600 font-medium hover:underline">
+              Login here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
