@@ -7,6 +7,9 @@ import useAuth from "../hooks/useAuth";
 import { signupSchema } from "../schema/validationSchemas";
 
 const Signup = () => {
+
+  const [acceptTerms, setAcceptTerms] = useState(false);
+const [termsError, setTermsError] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -23,7 +26,7 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
   const validation = signupSchema.safeParse(formData);
@@ -34,6 +37,12 @@ const Signup = () => {
     return;
   }
 
+  if (!acceptTerms) {
+    setTermsError("Please accept the Terms & Conditions");
+    return;
+  }
+
+  setTermsError("");
   setErrors({});
 
   const response = await signup(formData);
@@ -106,7 +115,28 @@ const Signup = () => {
               error={errors.phone}
               icon={<FiPhone />}
             />
+<div className="flex items-start gap-2 text-sm">
+  <input
+    type="checkbox"
+    checked={acceptTerms}
+    onChange={(e) => {
+      setAcceptTerms(e.target.checked);
+      if (e.target.checked) setTermsError("");
+    }}
+    className="mt-1 accent-indigo-600"
+  />
 
+  <label className="text-gray-600">
+    I agree to the{" "}
+    <span className="text-indigo-600 font-medium cursor-pointer hover:underline">
+      Terms & Conditions
+    </span>
+  </label>
+</div>
+
+{termsError && (
+  <p className="text-red-500 text-sm">{termsError}</p>
+)}
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition duration-200 flex justify-center items-center"
