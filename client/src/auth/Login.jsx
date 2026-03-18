@@ -21,28 +21,28 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const validation = loginSchema.safeParse(formData);
+  const validation = loginSchema.safeParse(formData);
 
-    if (!validation.success) {
-      const fieldErrors = validation.error.formErrors.fieldErrors;
-      setErrors(fieldErrors);
-      return;
-    }
+  if (!validation.success) {
+    const fieldErrors = validation.error.formErrors.fieldErrors;
+    setErrors(fieldErrors);
+    return;
+  }
 
-    setErrors({});
+  setErrors({});
 
-    const success = await login(formData);
+  const response = await login(formData);
 
-    if (success) {
-      toast.success("Login successful!");
-      navigate("/dashboard");
-    } else {
-      toast.error("Invalid email or password!");
-    }
-  };
+  if (response?.success) {
+    toast.success("Login successful!");
+    navigate("/dashboard");
+  } else {
+    toast.error(response?.message || "Invalid email or password");
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 px-4">

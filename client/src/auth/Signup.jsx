@@ -23,25 +23,28 @@ const Signup = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const validation = signupSchema.safeParse(formData);
-    if (!validation.success) {
-      const fieldErrors = validation.error.formErrors.fieldErrors;
-      setErrors(fieldErrors);
-      return;
-    }
-    setErrors({});
+  const validation = signupSchema.safeParse(formData);
 
-    const response = await signup(formData);
-    if (response) {
-      toast.success("Signup successful! Please login.");
-      navigate("/");
-    } else if (error) {
-      toast.error(error);
-    }
-  };
+  if (!validation.success) {
+    const fieldErrors = validation.error.formErrors.fieldErrors;
+    setErrors(fieldErrors);
+    return;
+  }
+
+  setErrors({});
+
+  const response = await signup(formData);
+
+  if (response?.success) {
+    toast.success("Signup successful! Please login.");
+    navigate("/");
+  } else {
+    toast.error(response?.message || "Something went wrong");
+  }
+};
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-400 to-blue-500 px-4">
