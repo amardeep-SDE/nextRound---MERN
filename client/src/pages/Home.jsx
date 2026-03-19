@@ -7,6 +7,7 @@ import NextRoundLogo from "../components/NextRoundLogo";
 const Home = () => {
   return (
     <div className="w-full h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] relative overflow-hidden font-poppins">
+      
       {/* Logo */}
       <div className="absolute top-4 left-6 md:left-16 z-10">
         <NextRoundLogo />
@@ -30,6 +31,7 @@ const Home = () => {
 
       {/* Main Content */}
       <div className="flex flex-col md:flex-row items-center h-full justify-center">
+        
         {/* Left Section */}
         <motion.div
           className="w-11/12 md:w-1/2 p-6 md:p-16"
@@ -51,7 +53,8 @@ const Home = () => {
               />
             </span>
           </h1>
-          <p className="text-lg md:text-xl mt-5 text-gray-200 animate-slideFade leading-relaxed max-w-lg">
+
+          <p className="text-lg md:text-xl mt-5 text-gray-200 leading-relaxed max-w-lg">
             Manage all your interview experiences digitally — track, reflect,
             and grow with every opportunity.
           </p>
@@ -88,19 +91,29 @@ const Home = () => {
           ].map((card, index) => (
             <motion.div
               key={index}
-              className="bg-gradient-to-br from-white/10 to-white/5 hover:from-yellow-500/20 hover:to-pink-500/10 rounded-2xl p-6 text-white shadow-xl backdrop-blur-sm w-full md:w-[45%] transform transition-all duration-300 hover:scale-[1.05] hover:shadow-2xl cursor-pointer group"
+              className="relative w-full md:w-[45%] rounded-2xl p-[1px] bg-gradient-to-br from-yellow-400/30 via-pink-500/20 to-purple-500/30 group transition-all duration-300 hover:scale-[1.05]"
               whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 200 }}
             >
-              <div className="flex items-center mb-3">
-                <div className="text-3xl bg-white/20 p-2 rounded-full shadow-inner group-hover:scale-110 transition-transform duration-300">
-                  {card.icon}
+              <div className="h-full w-full rounded-2xl bg-white/10 backdrop-blur-xl p-6 text-white shadow-xl border border-white/10 group-hover:border-white/30 transition duration-300">
+
+                {/* Icon + Title */}
+                <div className="flex items-center mb-4">
+                  <div className="text-3xl bg-white/20 p-3 rounded-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
+                    {card.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold ml-4 group-hover:text-yellow-300 transition">
+                    {card.title}
+                  </h3>
                 </div>
-                <h3 className="text-lg font-semibold ml-4">{card.title}</h3>
+
+                {/* Description */}
+                <p className="text-sm text-gray-200 group-hover:text-white transition-colors duration-300">
+                  {card.desc}
+                </p>
+
+                {/* Glow Effect */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 bg-gradient-to-br from-yellow-400/10 via-pink-500/10 to-purple-500/10 blur-xl transition duration-500"></div>
               </div>
-              <p className="text-sm text-gray-200 group-hover:text-white transition-colors duration-300">
-                {card.desc}
-              </p>
             </motion.div>
           ))}
         </motion.div>
