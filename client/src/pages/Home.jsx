@@ -68,54 +68,64 @@ const Home = () => {
           transition={{ duration: 1.2 }}
         >
           {[
-            {
-              icon: "📋",
-              title: "Track Interviews",
-              desc: "Keep all your interview records in one place, easily searchable & filterable.",
-            },
-            {
-              icon: "📈",
-              title: "Journey Insights",
-              desc: "Get insights on how you're improving over time and what to focus on.",
-            },
-            {
-              icon: "⏰",
-              title: "Smart Reminders",
-              desc: "Never miss an opportunity — get alerts before interviews or follow-ups.",
-            },
-            {
-              icon: "📑",
-              title: "Document Upload",
-              desc: "Upload and organize your resumes, notes, and important docs for quick access.",
-            },
-          ].map((card, index) => (
-            <motion.div
-              key={index}
-              className="relative w-full md:w-[45%] rounded-2xl p-[1px] bg-gradient-to-br from-yellow-400/30 via-pink-500/20 to-purple-500/30 group transition-all duration-300 hover:scale-[1.05]"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="h-full w-full rounded-2xl bg-white/10 backdrop-blur-xl p-6 text-white shadow-xl border border-white/10 group-hover:border-white/30 transition duration-300">
+  {
+    icon: "📋",
+    title: "Track Interviews",
+    desc: "Keep all your interview records in one place, easily searchable & filterable.",
+  },
+  {
+    icon: "📈",
+    title: "Journey Insights",
+    desc: "Get insights on how you're improving over time and what to focus on.",
+  },
+  {
+    icon: "⏰",
+    title: "Smart Reminders",
+    desc: "Never miss an opportunity — get alerts before interviews or follow-ups.",
+  },
+  {
+    icon: "📑",
+    title: "Document Upload",
+    desc: "Upload and organize your resumes, notes, and important docs for quick access.",
+  },
+].map((card, index) => (
+  <motion.div
+    key={index}
+    className="relative w-full md:w-[45%] rounded-2xl overflow-hidden group cursor-pointer"
+    whileHover={{ y: -8, scale: 1.04 }}
+    transition={{ type: "spring", stiffness: 200 }}
+  >
+    {/* Animated Gradient Border */}
+    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 opacity-40 blur-sm group-hover:opacity-80 transition duration-500"></div>
 
-                {/* Icon + Title */}
-                <div className="flex items-center mb-4">
-                  <div className="text-3xl bg-white/20 p-3 rounded-xl shadow-inner group-hover:scale-110 transition-transform duration-300">
-                    {card.icon}
-                  </div>
-                  <h3 className="text-lg font-semibold ml-4 group-hover:text-yellow-300 transition">
-                    {card.title}
-                  </h3>
-                </div>
+    {/* Card Content */}
+    <div className="relative bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-white shadow-xl group-hover:border-white/30 transition duration-300">
 
-                {/* Description */}
-                <p className="text-sm text-gray-200 group-hover:text-white transition-colors duration-300">
-                  {card.desc}
-                </p>
+      {/* Shine Effect */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+        <div className="absolute -left-10 top-0 w-40 h-full bg-white/10 rotate-12 transform translate-x-[-100%] group-hover:translate-x-[300%] transition duration-700"></div>
+      </div>
 
-                {/* Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 bg-gradient-to-br from-yellow-400/10 via-pink-500/10 to-purple-500/10 blur-xl transition duration-500"></div>
-              </div>
-            </motion.div>
-          ))}
+      {/* Icon */}
+      <div className="text-4xl mb-4 transform group-hover:scale-125 transition duration-300">
+        {card.icon}
+      </div>
+
+      {/* Title */}
+      <h3 className="text-lg font-semibold mb-2 group-hover:text-yellow-300 transition">
+        {card.title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-sm text-gray-200 group-hover:text-white transition duration-300">
+        {card.desc}
+      </p>
+
+      {/* Bottom Glow Line */}
+      <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 group-hover:w-full transition-all duration-500"></div>
+    </div>
+  </motion.div>
+))}
         </motion.div>
       </div>
     </div>
