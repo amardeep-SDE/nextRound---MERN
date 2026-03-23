@@ -77,21 +77,25 @@ const AddSchedule = () => {
     }
   };
 
- return (
+return (
   <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#020617] text-white p-4 sm:p-8">
+    
     <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-6 sm:p-10 rounded-2xl shadow-2xl border border-white/10">
-      
+
+      {/* Title */}
       <h2 className="text-3xl font-bold mb-8 text-center">
         <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-500 bg-clip-text text-transparent">
           Add Interview Schedule
         </span>
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-7">
 
-        {/* Date & Day */}
+        {/* Date Section */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Schedule Date</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">
+            Schedule Date
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="date"
@@ -112,9 +116,11 @@ const AddSchedule = () => {
           </div>
         </div>
 
-        {/* Company & Role */}
+        {/* Company Section */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Company Details</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">
+            Company Details
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="text"
@@ -142,9 +148,11 @@ const AddSchedule = () => {
           </div>
         </div>
 
-        {/* Mode & Place */}
+        {/* Mode Section */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Interview Mode</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">
+            Interview Mode
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <select
               name="mode"
@@ -172,7 +180,9 @@ const AddSchedule = () => {
 
         {/* Rounds */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Interview Rounds</h3>
+          <h3 className="text-lg font-semibold mb-3 text-gray-200">
+            Interview Rounds
+          </h3>
           <div className="flex flex-wrap gap-3">
             {roundOptions.map((round) => {
               const isSelected = formData.rounds.includes(round);
@@ -194,7 +204,7 @@ const AddSchedule = () => {
             })}
           </div>
 
-          {/* Progress Bar */}
+          {/* Progress */}
           <div className="w-full bg-white/10 h-2 rounded-full mt-3 overflow-hidden">
             <div
               className="bg-gradient-to-r from-green-400 to-emerald-500 h-full transition-all duration-300"
@@ -209,7 +219,9 @@ const AddSchedule = () => {
 
         {/* Topics */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Topics Asked</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">
+            Topics Asked
+          </h3>
           {formData.topics.map((topic, index) => (
             <div
               key={index}
@@ -244,7 +256,9 @@ const AddSchedule = () => {
 
         {/* Result */}
         <div>
-          <h3 className="text-lg font-semibold mb-2">Final Result</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-200">
+            Final Result
+          </h3>
           <select
             name="result"
             value={formData.result}
@@ -260,11 +274,11 @@ const AddSchedule = () => {
         </div>
 
         {/* Submit */}
-        <div className="text-center">
+        <div className="text-center pt-4">
           <button
             type="submit"
             disabled={loading}
-            className="mt-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white px-10 py-3 rounded-full text-lg shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center mx-auto"
+            className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white px-10 py-3 rounded-full text-lg shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center mx-auto"
           >
             {loading ? (
               <FiLoader className="animate-spin text-xl" />
