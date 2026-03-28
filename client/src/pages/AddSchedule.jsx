@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FiLoader } from "react-icons/fi";
 
-// FIX 6: constants moved outside component (no re-creation on every render)
 const ROUND_OPTIONS = ["Technical", "Machine", "HR"];
 const ROLE_OPTIONS = [
   "Frontend Developer",
@@ -22,13 +21,12 @@ const AddSchedule = () => {
     company: "",
     role: "",
     rounds: [],
-    topics: [{ id: Date.now(), title: "", details: "" }], // FIX 5: stable id
+    topics: [{ id: Date.now(), title: "", details: "" }],
     result: "",
     mode: "Online",
     place: "",
   });
 
-  // FIX 1: single setFormData call + FIX 2: date timezone fix
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "date") {
@@ -50,7 +48,6 @@ const AddSchedule = () => {
     }));
   };
 
-  // FIX 3: no direct mutation — use map to return new objects
   const handleTopicChange = (index, field, value) => {
     const updatedTopics = formData.topics.map((topic, i) =>
       i === index ? { ...topic, [field]: value } : topic
@@ -58,7 +55,6 @@ const AddSchedule = () => {
     setFormData((prev) => ({ ...prev, topics: updatedTopics }));
   };
 
-  // FIX 5: new topic gets a stable unique id
   const addTopic = () => {
     setFormData((prev) => ({
       ...prev,
@@ -66,42 +62,41 @@ const AddSchedule = () => {
     }));
   };
 
-  // FIX 4: prevent removing the last topic
   const removeTopic = (index) => {
     if (formData.topics.length === 1) return;
     const updatedTopics = formData.topics.filter((_, i) => i !== index);
     setFormData((prev) => ({ ...prev, topics: updatedTopics }));
   };
 
-  // FIX 7: validation + FIX 8: async/await with try-catch
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.rounds.length === 0) {
-      toast.error("Please select at least one interview round.");
+      toast.error("Select at least one round");
       return;
     }
+
     const emptyTopic = formData.topics.some((t) => t.title.trim() === "");
     if (emptyTopic) {
-      toast.error("Please fill in all topic titles.");
+      toast.error("Fill all topic titles");
       return;
     }
 
     try {
       const schedule = await addSchedule(formData);
       if (schedule) {
-        toast.success("Schedule added successfully!");
+        toast.success("Schedule Added!");
         navigate("/schedule");
       } else {
-        toast.error("Failed to add schedule!");
+        toast.error("Failed!");
       }
     } catch (err) {
-      toast.error("Something went wrong!");
+      toast.error("Error occurred");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#020617] text-white p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] via-[#111827] to-[#020617] text-white p-4 sm:p-8">
       <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-6 sm:p-10 rounded-2xl shadow-2xl border border-white/10">
 
         <h2 className="text-3xl font-bold mb-8 text-center">
@@ -110,35 +105,34 @@ const AddSchedule = () => {
           </span>
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-7">
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Date Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Schedule Date</h3>
+          {/* Date Card */}
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Schedule Date</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="date"
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="p-3 rounded-lg bg-white/10 border border-white/20 focus:ring-2 focus:ring-purple-400 outline-none"
+                className="p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
                 required
               />
               <input
                 type="text"
                 name="day"
-                placeholder="Day"
                 value={formData.day}
                 readOnly
-                aria-label="Day of week"
-                className="p-3 rounded-lg bg-white/5 border border-white/10 text-gray-300"
+                placeholder="Day"
+                className="p-3 rounded-lg bg-white/5 border border-white/10"
               />
             </div>
           </div>
 
-          {/* Company Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Company Details</h3>
+          {/* Company Card */}
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Company Details</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
@@ -146,7 +140,7 @@ const AddSchedule = () => {
                 placeholder="Company Name"
                 value={formData.company}
                 onChange={handleChange}
-                className="p-3 rounded-lg bg-white/10 border border-white/20 outline-none"
+                className="p-3 rounded-lg bg-white/10 border border-white/20"
                 required
               />
               <select
@@ -166,36 +160,42 @@ const AddSchedule = () => {
             </div>
           </div>
 
-          {/* Mode Section */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Interview Mode</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <select
-                name="mode"
-                value={formData.mode}
-                onChange={handleChange}
-                className="p-3 rounded-lg bg-white/10 border border-white/20"
-              >
-                <option value="Online">Online</option>
-                <option value="Offline">Offline</option>
-              </select>
-              {formData.mode === "Offline" && (
-                <input
-                  type="text"
-                  name="place"
-                  value={formData.place}
-                  onChange={handleChange}
-                  placeholder="Enter location"
-                  className="p-3 rounded-lg bg-white/10 border border-white/20"
-                  required
-                />
-              )}
+          {/* Mode Card */}
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Interview Mode</h3>
+            <div className="flex gap-3">
+              {["Online", "Offline"].map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, mode }))}
+                  className={`px-4 py-2 rounded-lg ${
+                    formData.mode === mode
+                      ? "bg-purple-500"
+                      : "bg-white/10 border border-white/20"
+                  }`}
+                >
+                  {mode}
+                </button>
+              ))}
             </div>
+
+            {formData.mode === "Offline" && (
+              <input
+                type="text"
+                name="place"
+                value={formData.place}
+                onChange={handleChange}
+                placeholder="Enter location"
+                className="p-3 rounded-lg bg-white/10 border border-white/20 mt-3 w-full"
+                required
+              />
+            )}
           </div>
 
           {/* Rounds */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-gray-200">Interview Rounds</h3>
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Interview Rounds</h3>
             <div className="flex flex-wrap gap-3">
               {ROUND_OPTIONS.map((round) => {
                 const isSelected = formData.rounds.includes(round);
@@ -206,67 +206,69 @@ const AddSchedule = () => {
                     onClick={() => handleCheckboxChange(round)}
                     className={`px-4 py-2 rounded-full text-sm font-semibold transition-all
                     ${isSelected
-                      ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white scale-105"
-                      : "bg-white/10 border border-white/20 hover:bg-white/20"
-                    }`}
+                        ? "bg-gradient-to-r from-green-400 to-emerald-500 scale-105"
+                        : "bg-white/10 border border-white/20"
+                      }`}
                   >
                     {round}
                   </button>
                 );
               })}
             </div>
-            <div className="w-full bg-white/10 h-2 rounded-full mt-3 overflow-hidden">
+
+            <div className="w-full bg-white/10 h-2 rounded-full mt-3">
               <div
-                className="bg-gradient-to-r from-green-400 to-emerald-500 h-full transition-all duration-300"
+                className="bg-gradient-to-r from-green-400 to-emerald-500 h-full"
                 style={{ width: `${(formData.rounds.length / ROUND_OPTIONS.length) * 100}%` }}
               />
             </div>
           </div>
 
           {/* Topics */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Topics Asked</h3>
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Topics Asked</h3>
+
             {formData.topics.map((topic, index) => (
-              <div
-                key={topic.id}  // FIX 5: stable key
-                className="mb-4 bg-white/5 border border-white/10 p-4 rounded-xl"
-              >
+              <div key={topic.id} className="mb-4">
                 <input
                   type="text"
-                  placeholder={`Topic Title ${index + 1}`}
+                  placeholder={`Topic ${index + 1}`}
                   value={topic.title}
-                  onChange={(e) => handleTopicChange(index, "title", e.target.value)}
+                  onChange={(e) =>
+                    handleTopicChange(index, "title", e.target.value)
+                  }
                   className="p-3 rounded-lg bg-white/10 w-full"
                 />
                 <textarea
-                  placeholder="Details (optional)"
+                  placeholder="Details"
                   value={topic.details}
-                  onChange={(e) => handleTopicChange(index, "details", e.target.value)}
-                  className="p-3 rounded-lg bg-white/10 w-full mt-2 resize-none"
-                  rows={2}
+                  onChange={(e) =>
+                    handleTopicChange(index, "details", e.target.value)
+                  }
+                  className="p-3 rounded-lg bg-white/10 w-full mt-2"
                 />
                 <button
                   type="button"
                   onClick={() => removeTopic(index)}
-                  disabled={formData.topics.length === 1}
-                  className="text-red-400 text-sm mt-2 hover:underline disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="text-red-400 text-sm mt-1"
                 >
                   Remove
                 </button>
               </div>
             ))}
+
             <button
               type="button"
               onClick={addTopic}
-              className="text-blue-300 hover:underline text-sm"
+              className="text-blue-300 text-sm"
             >
-              + Add Another Topic
+              + Add Topic
             </button>
           </div>
 
           {/* Result */}
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-200">Final Result</h3>
+          <div className="bg-white/5 p-5 rounded-xl border border-white/10">
+            <h3 className="text-lg mb-3 text-purple-300 font-semibold">Final Result</h3>
             <select
               name="result"
               value={formData.result}
@@ -282,12 +284,11 @@ const AddSchedule = () => {
           </div>
 
           {/* Submit */}
-          <div className="text-center pt-4">
+          <div className="text-center">
             <button
               type="submit"
               disabled={loading}
-              aria-label={loading ? "Saving..." : "Save Schedule"}
-              className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white px-10 py-3 rounded-full text-lg shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center mx-auto"
+              className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 px-10 py-3 rounded-full text-lg shadow-lg transition-all hover:scale-105 flex items-center justify-center mx-auto"
             >
               {loading ? <FiLoader className="animate-spin text-xl" /> : "Save Schedule"}
             </button>
