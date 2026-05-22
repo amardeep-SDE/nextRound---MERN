@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Input from "../components/Input";
-import useAuth from "../hooks/useAuth";
 import { FiMail, FiLock, FiLoader } from "react-icons/fi";
 import { toast } from "react-toastify";
+import Input from "../components/Input";
+import useAuth from "../hooks/useAuth";
 import { loginSchema } from "../schema/validationSchemas";
 
 const Login = () => {
@@ -18,57 +18,70 @@ const Login = () => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const validation = loginSchema.safeParse(formData);
+    const validation = loginSchema.safeParse(formData);
 
-  if (!validation.success) {
-    const fieldErrors = validation.error.formErrors.fieldErrors;
-    setErrors(fieldErrors);
-    return;
-  }
+    if (!validation.success) {
+      const fieldErrors = validation.error.formErrors.fieldErrors;
+      setErrors(fieldErrors);
+      return;
+    }
 
-  setErrors({});
+    setErrors({});
 
-  const response = await login(formData);
+    const response = await login(formData);
 
-  if (response?.success) {
-    toast.success("Login successful!");
-    navigate("/dashboard");
-  } else {
-    toast.error(response?.message || "Invalid email or password");
-  }
-};
+    if (response?.success) {
+      toast.success("Login successful!");
+      navigate("/dashboard");
+    } else {
+      toast.error(response?.message || "Invalid email or password");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500 px-4">
-      
-      <div className="flex w-full max-w-5xl bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden">
-        
-        {/* Left Image Section */}
-        <div className="hidden md:flex md:w-1/2 bg-indigo-100 items-center justify-center p-10">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-500 flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-6xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2">
+
+        {/* Left Side */}
+        <div className="hidden md:flex flex-col items-center justify-center bg-white/5 p-10 text-white relative">
           <img
             src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png"
             alt="Login"
-            className="w-80"
+            className="w-80 drop-shadow-2xl"
           />
-        </div>
 
-        {/* Form Section */}
-        <div className="w-full md:w-1/2 p-10">
-          <h1 className="text-3xl font-bold text-center text-indigo-600 mb-2">
-            Welcome Back
+          <h1 className="text-4xl font-bold mt-8">
+            Welcome Back 👋
           </h1>
 
-          <p className="text-center text-gray-500 mb-6 text-sm">
-            Login to continue to your dashboard
+          <p className="text-white/80 text-center mt-4 max-w-sm">
+            Login to access your dashboard and continue your journey with us.
           </p>
+        </div>
+
+        {/* Right Side */}
+        <div className="bg-white p-8 md:p-12 flex flex-col justify-center">
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold text-gray-800">
+              Sign In
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Please login to continue
+            </p>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+
             <Input
               label="Email Address"
               name="email"
@@ -91,10 +104,19 @@ const handleSubmit = async (e) => {
               error={errors.password}
             />
 
+            <div className="flex justify-end">
+              <Link
+                to="/forget-password"
+                className="text-sm text-indigo-600 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-500 transition duration-200 flex justify-center items-center font-medium"
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:scale-[1.02] transition-all duration-300 shadow-lg flex items-center justify-center"
             >
               {loading ? (
                 <FiLoader className="animate-spin text-xl" />
@@ -104,20 +126,11 @@ const handleSubmit = async (e) => {
             </button>
           </form>
 
-          <div className="mt-5 text-center text-sm text-gray-600">
-            <Link
-              to="/forget-password"
-              className="text-indigo-600 hover:underline"
-            >
-              Forgot your password?
-            </Link>
-          </div>
-
-          <p className="text-sm text-center text-gray-600 mt-4">
+          <p className="text-center text-sm text-gray-600 mt-6">
             Don’t have an account?{" "}
             <Link
               to="/signup"
-              className="text-indigo-600 font-medium hover:underline"
+              className="text-indigo-600 font-semibold hover:underline"
             >
               Signup here
             </Link>
