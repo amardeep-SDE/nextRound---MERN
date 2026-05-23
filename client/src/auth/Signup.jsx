@@ -1,15 +1,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  FiUser,
+  FiMail,
+  FiLock,
+  FiPhone,
+  FiLoader,
+} from "react-icons/fi";
+
 import { toast } from "react-toastify";
-import { FiUser, FiMail, FiLock, FiPhone, FiLoader } from "react-icons/fi";
 import Input from "../components/Input";
 import useAuth from "../hooks/useAuth";
 import { signupSchema } from "../schema/validationSchemas";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
+  const { signup, loading } = useAuth();
 
   const [acceptTerms, setAcceptTerms] = useState(false);
-const [termsError, setTermsError] = useState("");
+
+  const [termsError, setTermsError] = useState("");
+
+  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,64 +31,78 @@ const [termsError, setTermsError] = useState("");
     phone: "",
   });
 
-  const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
-  const { signup, loading, error } = useAuth();
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const validation = signupSchema.safeParse(formData);
+    const validation = signupSchema.safeParse(formData);
 
-  if (!validation.success) {
-    const fieldErrors = validation.error.formErrors.fieldErrors;
-    setErrors(fieldErrors);
-    return;
-  }
+    if (!validation.success) {
+      const fieldErrors = validation.error.formErrors.fieldErrors;
+      setErrors(fieldErrors);
+      return;
+    }
 
-  if (!acceptTerms) {
-    setTermsError("Please accept the Terms & Conditions");
-    return;
-  }
+    if (!acceptTerms) {
+      setTermsError("Please accept Terms & Conditions");
+      return;
+    }
 
-  setTermsError("");
-  setErrors({});
+    setTermsError("");
+    setErrors({});
 
-  const response = await signup(formData);
+    const response = await signup(formData);
 
-  if (response?.success) {
-    toast.success("Signup successful! Please login.");
-    navigate("/");
-  } else {
-    toast.error(response?.message || "Something went wrong");
-  }
-};
+    if (response?.success) {
+      toast.success("Signup successful!");
+      navigate("/");
+    } else {
+      toast.error(response?.message || "Something went wrong");
+    }
+  };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-400 to-blue-500 px-4">
-      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
-        
-        {/* Left Side - Image */}
-        <div className="hidden md:flex md:w-1/2 bg-indigo-100 items-center justify-center">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" 
-            alt="Register User"
-            className="w-3/4 h-auto object-contain"
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-500 flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-6xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2">
 
-        {/* Right Side - Form */}
-        <div className="w-full md:w-1/2 p-8">
-          <h1 className="text-3xl font-bold text-center mb-6 text-indigo-600">
-            Create Account
+        {/* Left Section */}
+        <div className="hidden md:flex flex-col items-center justify-center bg-white/5 p-10 text-white">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png"
+            alt="Signup"
+            className="w-80 drop-shadow-2xl"
+          />
+
+          <h1 className="text-4xl font-bold mt-8">
+            Join With Us 🚀
           </h1>
 
+          <p className="text-white/80 text-center mt-4 max-w-sm">
+            Create your account and start managing everything easily.
+          </p>
+        </div>
+
+        {/* Right Section */}
+        <div className="bg-white p-8 md:p-12 flex flex-col justify-center">
+
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold text-gray-800">
+              Create Account
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Signup to get started
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
+
             <Input
               label="User Name"
               name="username"
@@ -85,8 +113,9 @@ const handleSubmit = async (e) => {
               error={errors.username}
               icon={<FiUser />}
             />
+
             <Input
-              label="Email"
+              label="Email Address"
               name="email"
               type="email"
               value={formData.email}
@@ -95,6 +124,7 @@ const handleSubmit = async (e) => {
               error={errors.email}
               icon={<FiMail />}
             />
+
             <Input
               label="Password"
               name="password"
@@ -105,6 +135,7 @@ const handleSubmit = async (e) => {
               error={errors.password}
               icon={<FiLock />}
             />
+
             <Input
               label="Phone Number"
               name="phone"
@@ -115,44 +146,56 @@ const handleSubmit = async (e) => {
               error={errors.phone}
               icon={<FiPhone />}
             />
-<div className="flex items-start gap-2 text-sm">
-  <input
-    type="checkbox"
-    checked={acceptTerms}
-    onChange={(e) => {
-      setAcceptTerms(e.target.checked);
-      if (e.target.checked) setTermsError("");
-    }}
-    className="mt-1 accent-indigo-600"
-  />
 
-  <label className="text-gray-600">
-    I agree to the{" "}
-    <span className="text-indigo-600 font-medium cursor-pointer hover:underline">
-      Terms & Conditions
-    </span>
-  </label>
-</div>
+            <div>
+              <div className="flex items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={acceptTerms}
+                  onChange={(e) => {
+                    setAcceptTerms(e.target.checked);
 
-{termsError && (
-  <p className="text-red-500 text-sm">{termsError}</p>
-)}
+                    if (e.target.checked) {
+                      setTermsError("");
+                    }
+                  }}
+                  className="mt-1 accent-indigo-600"
+                />
+
+                <label className="text-gray-600">
+                  I agree to the{" "}
+                  <span className="text-indigo-600 font-medium cursor-pointer hover:underline">
+                    Terms & Conditions
+                  </span>
+                </label>
+              </div>
+
+              {termsError && (
+                <p className="text-red-500 text-sm mt-1">
+                  {termsError}
+                </p>
+              )}
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-500 transition duration-200 flex justify-center items-center"
               disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:scale-[1.02] transition-all duration-300 shadow-lg flex items-center justify-center"
             >
               {loading ? (
                 <FiLoader className="animate-spin text-xl" />
               ) : (
-                "Sign Up"
+                "Create Account"
               )}
             </button>
           </form>
 
-          <p className="text-sm text-center text-gray-600 mt-4">
+          <p className="text-sm text-center text-gray-600 mt-6">
             Already have an account?{" "}
-            <Link to="/" className="text-indigo-600 font-medium hover:underline">
+            <Link
+              to="/"
+              className="text-indigo-600 font-semibold hover:underline"
+            >
               Login here
             </Link>
           </p>
