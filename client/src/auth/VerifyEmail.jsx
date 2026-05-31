@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { FiLoader } from "react-icons/fi";
 import { ShieldCheck } from "lucide-react";
@@ -7,21 +7,37 @@ import { useNavigate } from "react-router-dom";
 
 const VerifyEmail = () => {
   const inputRefs = useRef([]);
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
-  const { verifyEmail, loading } = useAuth();
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [timer, setTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
+
+  const { verifyEmail, resendOtp, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Countdown Timer
+  useEffect(() => {
+    let interval;
+
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      setCanResend(true);
+    }
+
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleChange = (e, index) => {
     const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
-
-    if (!value) return;
 
     const newOtp = [...otp];
     newOtp[index] = value.toUpperCase();
     setOtp(newOtp);
 
-    if (index < 5) {
+    if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -36,6 +52,14 @@ const VerifyEmail = () => {
       } else if (index > 0) {
         inputRefs.current[index - 1]?.focus();
       }
+    }
+
+    if (e.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+
+    if (e.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
@@ -57,9 +81,6 @@ const VerifyEmail = () => {
     });
 
     setOtp(newOtp);
-
-    const nextIndex = Math.min(pastedData.length, 5);
-    inputRefs.current[nextIndex]?.focus();
   };
 
   const handleSubmit = async (e) => {
@@ -75,13 +96,33 @@ const VerifyEmail = () => {
     const result = await verifyEmail(code);
 
     if (result) {
-      toast.success("Email verified successfully!");
+      toast.success("Email verified successfully");
 
       setOtp(["", "", "", "", "", ""]);
 
       navigate("/dashboard");
     } else {
       toast.error("Invalid or expired verification code");
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      if (resendOtp) {
+        const result = await resendOtp();
+
+        if (!result) {
+          toast.error("Failed to resend OTP");
+          return;
+        }
+      }
+
+      toast.success("OTP sent successfully");
+
+      setTimer(30);
+      setCanResend(false);
+    } catch (error) {
+      toast.error("Failed to resend OTP");
     }
   };
 
@@ -106,10 +147,7 @@ const VerifyEmail = () => {
         {/* Icon */}
         <div className="flex justify-center mb-5">
           <div className="bg-cyan-500/20 p-4 rounded-full">
-            <ShieldCheck
-              size={40}
-              className="text-cyan-400"
-            />
+            <ShieldCheck size={40} className="text-cyan-400" />
           </div>
         </div>
 
@@ -132,7 +170,7 @@ const VerifyEmail = () => {
               <input
                 key={index}
                 type="text"
-                maxLength="1"
+                maxLength={1}
                 value={char}
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
@@ -188,16 +226,25 @@ const VerifyEmail = () => {
             )}
           </button>
 
-          {/* Footer Text */}
-          <p className="text-center text-gray-400 text-sm mt-6">
-            Didn't receive the code?
-            <button
-              type="button"
-              className="ml-2 text-cyan-400 hover:text-cyan-300"
-            >
-              Resend Code
-            </button>
-          </p>
+          {/* Resend OTP */}
+          <div className="text-center mt-6">
+            {canResend ? (
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                className="text-cyan-400 hover:text-cyan-300 font-medium"
+              >
+                Resend OTP
+              </button>
+            ) : (
+              <p className="text-gray-400 text-sm">
+                Resend OTP in{" "}
+                <span className="text-cyan-400 font-semibold">
+                  {timer}s
+                </span>
+              </p>
+            )}
+          </div>
         </form>
       </div>
     </div>
