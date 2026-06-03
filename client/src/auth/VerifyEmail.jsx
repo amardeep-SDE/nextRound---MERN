@@ -119,9 +119,10 @@ const VerifyEmail = () => {
 
       toast.success("OTP sent successfully");
 
-      setTimer(30);
+      setTimer(60);
       setCanResend(false);
     } catch (error) {
+      console.error("Error resending OTP:", error);
       toast.error("Failed to resend OTP");
     }
   };
